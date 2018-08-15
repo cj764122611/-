@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.mapper.DistrictMapper">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+	<!-- 地区表 -->
+	<!-- 得到所有的地区 -->
+	<select id="getAllDistrict" resultMap="districtMap" >
+		select district.id, district.name,street.id as sid,street.name as sname, district_id from district left join street on district.id = street.district_id
+	</select>
+	
+	<resultMap type="District" id="districtMap">
+		<id column="id"  property="id"/>
+		<result column="name" property="name"/>
+		<collection property="streets"  resultMap="streetMap"/>
+	</resultMap>
+	<resultMap type="Street" id="streetMap">
+		<id column="sid"  property="id"/>
+		<result column="sname" property="name"/>
+		<result column="district_id" property="district_id"/>
+	</resultMap>
+
+</mapper>

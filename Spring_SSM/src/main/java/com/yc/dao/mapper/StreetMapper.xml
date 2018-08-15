@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.mapper.StreetMapper">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+	<!-- 街道表 id int primary key, name varchar(50), district_id int -->
+	<!-- 根据地区的id得到所有街道的信息 -->
+	<select id="getAllStreetByid" parameterType="Map" resultType="Street" >
+		select *
+		from street where district_id = #{district_id}
+	</select>
+</mapper>

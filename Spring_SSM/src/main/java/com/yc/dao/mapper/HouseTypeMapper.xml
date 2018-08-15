@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.mapper.HouseTypeMapper">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+	<!-- 房屋类型 表  -->
+	<!-- 得到所有的房屋信息表 -->
+	<select id="getAllHouseType" resultType="HouseType">
+		select * from housetype
+	</select>
+</mapper>

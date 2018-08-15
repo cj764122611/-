@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.mapper.HouseMapper">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+	<!-- 房屋信息表 -->
+	<insert id="addHouse" parameterType="House" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into house
+		(user_id,type_id,title,description,price,pubdate,floorage,contact,street_id)
+		values
+		(#{user.id},#{houseType.id},#{title},#{description},#{price},#{pubdate},#{floorage},#{contact},#{street.id})
+	</insert>
+
+	<update id="updateHouseInfo" parameterType="House">
+		update house set
+		user_id = #{user.id},type_id = #{houseType.id},description =
+		#{description},title = #{title},price = #{price},pubdate =
+		#{pubdate},
+		floorage = #{floorage},contact = #{contact},street_id = #{street.id}
+		where id = #{id}
+	</update>
+
+	<!-- 按条件查询的拼接 -->
+	<sql id="jointSql">
+		from house
+		<where>
+			<if test="title != null and title != ''">
+				title like '${title}'
+			</if>
+			<if test="minprice != null and maxprice != null">
+				price between #{minprice} and #{maxprice}
+			</if>
+			<if test="minfloorage != null and maxfloorage != null">
+				price between #{minfloorage} and #{maxfloorage}
+			</if>
+			<if test="pubdate != null ">
+				pubdate = #{pubdate}
+			</if>
+			<if test="street_id != null ">
+				street_id = #{street_id}
+			</if>
+			<if test="user_id != null ">
+				user_id = #{user_id}
+			</if>
+			<if test="type_id != null ">
+				type_id = #{type_id}
+			</if>
+			<if test="id != null">
+				id = #{id}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 排序拼接 -->
+	<sql id="orderbySql">
+		<if test="orderby!=null and orderby!=''">
+			order by #{orderby}
+		</if>
+		<if test="orderway!=null and orderway!=''">
+			#{orderway}
+		</if>
+	</sql>
+
+	<!--分页拼接 -->
+	<sql id="pagesql">
+		<if test="start != null and pagesize != null">
+			limit #{start},#{pagesize}
+		</if> 
+	</sql>
+
+	<!-- 详细查询 -->
+	<select id="findHouse" parameterType="map" resultMap="houseMap" >
+		select * <include refid="jointSql" /> <include refid="orderbySql" /> <include refid="pagesql" />
+	</select>
+
+	<!--按条件查询 -->
+	<select id="findHouseByjoint" resultMap="houseMap">
+		select *
+		<include refid="jointSql" />
+	</select>
+
+	<!-- 得到总数 -->
+	<select id="findHouseCount" resultType="Integer" parameterType="map">
+		select count(*)
+		<include refid="jointSql" />
+	</select>
+
+	<!-- 删除单挑数据 -->
+	<delete id="delHouseByid" parameterType="Integer">
+		delete from house where
+		id = #{id}
+	</delete>
+
+	<!--  删除多条数据  -->
+	<delete id="delHouseByList">
+		delete from 
+		house where id in 
+		<foreach collection="list" open="(" close=")" separator=","  item="id">
+			 #{id} 
+		</foreach> 
+	</delete>
+	<!-- id int primary key auto_increment, user_id int, type_id int, title 
+		nvarchar(50), description text, price double, pubdate date, floorage int, 
+		contact varchar(100), street_id int -->
+	<resultMap type="House" id="houseMap">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="description" property="description" />
+		<result column="price" property="price" />
+		<result column="pubdate" property="pubdate" />
+		<result column="floorage" property="floorage" />
+		<result column="contact" property="contact" />
+		<association property="user" resultMap="userMap" />
+		<association property="houseType" resultMap="houseTypeMap" />
+		<association property="street" resultMap="streetMap" />
+	</resultMap>
+
+	<!-- id int primary key auto_increment, name varchar(50), password varchar(50), 
+		telephone varchar(15), username varchar(50), isadmin varchar(5) -->
+	<resultMap type="Users" id="userMap">
+		<id column="user_id" property="id" />
+		<result column="name" property="name" />
+		<result column="password" property="password" />
+		<result column="telephone" property="username" />
+		<result column="isadmin" property="isadmin" />
+	</resultMap>
+
+	<!-- id int primary key, name varchar(50), district_id int -->
+	<resultMap type="HouseType" id="houseTypeMap">
+		<id column="type_id" property="id" />
+		<result column="name" property="name" />
+	</resultMap>
+	
+	<!-- id int primary key, name varchar(50), district_id int -->
+	<resultMap type="Street" id="streetMap">
+		<id column="street_id" property="id" />
+		<result column="name" property="name" />
+		<result column="district_id" property="district_id" />
+	</resultMap>
+
+</mapper>

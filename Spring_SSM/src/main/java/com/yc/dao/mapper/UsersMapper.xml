@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.mapper.UsersMapper">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+	<!-- 用户表 ID int primary key auto_increment, name varchar(50), password varchar(50), 
+		* telephone varchar(15), username varchar(50), isadmin varchar(5) -->
+
+	<!-- 根据name与password查询用户是否存在 ，登录操作 -->
+	<select id="selectOne" parameterType="Users" resultType="Users">
+		select *
+		from users
+		<where>
+			<if test="id != null and id != ''">
+				and id = #{id}
+			</if>
+			<if test="username != null and username != ''">
+				and username = #{username}
+			</if>
+			<if test="password != null and password != ''">
+				and password = #{password}
+			</if>
+		</where>
+	</select>
+
+	<!--注册一个用户信息 -->
+	<insert id="registerUsers" parameterType="Users" useGeneratedKeys="true" keyProperty="id">
+		insert into users
+		(name,password,telephone,username,isadmin) values
+		(#{name},#{password},#{telephone},#{username},#{isadmin})
+	</insert>
+
+	<!--用户修改个人信息 -->
+	<update id="updateUserInfo" parameterType="Users">
+		update users
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="password != null">
+				password = #{password},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone},
+			</if>
+			<if test="password != null">
+				username = #{username},
+			</if>
+			<if test="isadmin != null">
+				isadmin = #{isadmin},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!--删除用户信息  -->
+	<delete id="delUserInfo" parameterType="Integer">
+		delete from users where id = #{id}
+	</delete>
+
+</mapper>
