@@ -22,7 +22,6 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		System.out.println("dsdfsfdhsjdfshfjks");
 		return new ApiInfoBuilder().title("关于用户操作的相关内容").description("以下是相关于用户的操作说明").version("1.0").build();
 	}
 }
